@@ -3,13 +3,15 @@ This program is meant to be run on the nlpgrid system at the University of Penns
 The filepath for this program on the nlpgrid is:
 /mnt/nlpgridio3/data/dstekol/ImageVectorPacker.py
 
+The relevant file in this github repository is ImageVectorPacker.py
+
 The purpose of this program is to collect specified images and image vectors and compile them into a folder 
 so that they are easy to transport for demo purposes.
 
 It is used as follows:
 Enter 10 native English words, separated by commas, as instructed. 
 	Example: 
-		dog, cat, raccoon, animal, friend, city, silver, 
+		dog, cat, raccoon, animal, friend, city, silver, tractor, number, kitten
 Enter the name of a foreign language, as instructed.
 	Example: 
 		french

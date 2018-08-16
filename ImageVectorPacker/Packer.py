@@ -13,6 +13,7 @@ import shutil
 #nativewords = []
 
 features = {}
+numImages = 10
 #foreignword = ""
 #foreignlanguage = ""
 #foreignlanguageabbrev = ""
@@ -29,33 +30,55 @@ foreign_lang=""
 #main function
 def transfer():
     global foreign_lang
-    foreign_lang, foreign_word, nat_words = getInput()
+
+    #creates or clears destination folder
     if(demoname in os.listdir(os.getcwd())):
         shutil.rmtree(demoname)
     os.mkdir(demoname)
-    fetchedWords = set(getNativeWords(nat_words))
-    if(len(fetchedWords) < 10):
-        print("Failed to fetch following native words: ")
-        print(nat_words - fetchedWords)
-        print("Please try again with different words")
-        return
 
-    foreign_lang, foreign_abbrev = getLanguageAbbrev(foreign_lang)
-    print(foreign_lang)
-    print(foreign_abbrev)
-    if(foreign_abbrev==None):
-        print("Cant find language. Please try again.")
-        return
-    success = getForeignWord(foreign_word, foreign_lang, foreign_abbrev)
-    if(not success):
-        print("Couldn't find foreign word. Please try again")
-        return
+    #reads in language name and retrieves abbreviation
+    foreign_abbrev = None
+    while(foreign_abbrev==None):
+        foreign_lang = raw_input("Enter foreign language: ")
+        foreign_lang, foreign_abbrev = getLanguageAbbrev(foreign_lang)
+        print(foreign_lang)
+        print(foreign_abbrev)
+        if(foreign_abbrev==None):
+            print("Cant find language. Please try again.")
+    
+        
+
+    #reads in foreign word and compiles images and features
+    success = False
+    while(not success):
+        foreign_word = raw_input("Enter foreign word: ")
+        success = getForeignWord(foreign_word, foreign_lang, foreign_abbrev)
+        if(not success):
+            print("Couldn't find foreign word. Please try again")
+            
+    #reads in native words and compiles images and features
+    success = False
+    remainingWords = numImages
+    while(not success):
+        nat_words = inputNativeWords(remainingWords)
+        fetchedWords = set(getNativeWords(nat_words))
+        remainingWords = len(nat_words) - len(fetchedWords)
+        if(remainingWords > 0):
+            print("Failed to fetch following native words: ")
+            print(str(nat_words - fetchedWords))
+        else:
+            success = True
+
+    
+    #writes features file to destination folder
     with open(demoname+"/"+demoname+".js", 'w') as fjson:
         json.dump(features, fjson, ensure_ascii=False, sort_keys=True, indent=4)
     with open(demoname+"/"+demoname+".js", 'r+') as f:
         content = f.read()
         f.seek(0, 0)
         f.write("var data = ".rstrip('\r\n') + '\n' + content)
+
+    print("Finished")
 
 #copies over data for native words
 def getNativeWords(nativewords):
@@ -142,7 +165,7 @@ def getFirst10(path):
         name, ext = os.path.splitext(filename)
         if (ext in validExtensions) and valid:
             filesFound.append(filename)
-            if len(filesFound)==10:
+            if len(filesFound)==numImages:
                 return filesFound
     return filesFound
 
@@ -170,17 +193,11 @@ def downsize(f, dest, counter):
 
 #adds a "0" prefix to any single digit numerical filenames (to make them consistent with how they are currently stored)
 def getZeroPrefix(num):
-    if num<10:
+    if num<numImages:
         return "0"+str(num)
     else:
         return str(num)
 
-#gets user input (which words to fetch, where to save them)
-def getInput():
-    natwords = inputNativeWords(10)
-    for_lang = raw_input("Enter foreign language: ")
-    for_word = raw_input("Enter foreign word: ")
-    return for_lang, for_word, natwords
 
 
 def inputNativeWords(num):
@@ -191,7 +208,7 @@ def inputNativeWords(num):
         for elt in natwords:
             natwords[counter] = elt.strip()
             counter += 1
-        if(len(natwords)==num):
+        if(len(set(natwords))==num):
             valid = True
     return set(natwords)
 
