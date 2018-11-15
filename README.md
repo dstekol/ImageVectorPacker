@@ -1,6 +1,4 @@
-THIS PROGRAM IS MEANT FOR MEMBERS OF THE NLP LAB AT THE UNIVERSITY OF PENNSYLVANIA. 
-
-This program is meant to be run on the nlpgrid system.
+THIS PROGRAM IS MEANT TO BE USED AS A UTILITY FOR MEMBERS OF THE NLP LAB AT THE UNIVERSITY OF PENNSYLVANIA. IT MUST BE RUN ON THE NLP-GRID.
 
 The filepath for this program on the nlpgrid is:
 /mnt/nlpgridio3/data/dstekol/ImageVectorPacker.py
